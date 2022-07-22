@@ -26,7 +26,6 @@ var SocketRun bool
 
 type Repository interface {
 	App() AppService
-	User() UserService
 	Docker() DockerService
 	Casa() CasaService
 	Disk() DiskService
@@ -38,7 +37,6 @@ type Repository interface {
 func NewService(db *gorm.DB) Repository {
 	return &store{
 		app:    NewAppService(db),
-		user:   NewUserService(db),
 		docker: NewDockerService(),
 		casa:   NewCasaService(),
 		disk:   NewDiskService(db),
@@ -49,9 +47,7 @@ func NewService(db *gorm.DB) Repository {
 }
 
 type store struct {
-	db     *gorm.DB
 	app    AppService
-	user   UserService
 	docker DockerService
 	casa   CasaService
 	disk   DiskService
@@ -74,10 +70,6 @@ func (c *store) Notify() NotifyServer {
 
 func (c *store) App() AppService {
 	return c.app
-}
-
-func (c *store) User() UserService {
-	return c.user
 }
 
 func (c *store) Docker() DockerService {

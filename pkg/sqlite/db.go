@@ -39,7 +39,6 @@ func GetDb(dbPath string) *gorm.DB {
 	if err != nil {
 		loger.Error("sqlite connect error", zap.Any("db connect error", err))
 		panic("sqlite connect error")
-		return nil
 	}
 	gdb = db
 
@@ -53,7 +52,7 @@ func GetDb(dbPath string) *gorm.DB {
 	drop table o_user;	
 	`)
 
-	err = db.AutoMigrate(&model2.AppNotify{}, &model2.AppListDBModel{}, &model2.SerialDisk{}, model2.UserDBModel{})
+	err = db.AutoMigrate(&model2.AppNotify{}, &model2.AppListDBModel{}, &model2.SerialDisk{})
 	db.Exec("DROP TABLE IF EXISTS o_application")
 	db.Exec("DROP TABLE IF EXISTS o_friend")
 	db.Exec("DROP TABLE IF EXISTS o_person_download")

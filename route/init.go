@@ -1,13 +1,11 @@
 package route
 
 import (
-	"os"
 	"strconv"
 	"strings"
 
 	"github.com/IceWhaleTech/CasaOS/pkg/config"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/command"
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/encryption"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/file"
 	"github.com/IceWhaleTech/CasaOS/service"
 	model2 "github.com/IceWhaleTech/CasaOS/service/model"
@@ -22,8 +20,6 @@ func InitFunction() {
 	CheckToken2_11()
 	ImportApplications()
 	ChangeAPIUrl()
-
-	MoveUserToDB()
 }
 
 func CheckSerialDiskMount() {
@@ -116,25 +112,4 @@ func ChangeAPIUrl() {
 		config.Cfg.SaveTo(config.SystemConfigInfo.ConfigPath)
 	}
 
-}
-
-//0.3.3
-//Transferring user data to the database
-func MoveUserToDB() {
-
-	if len(config.UserInfo.UserName) > 0 && service.MyService.User().GetUserInfoByUserName(config.UserInfo.UserName).Id == 0 {
-		user := model2.UserDBModel{}
-		user.Username = config.UserInfo.UserName
-		user.Email = config.UserInfo.Email
-		user.Nickname = config.UserInfo.NickName
-		user.Password = encryption.GetMD5ByStr(config.UserInfo.PWD)
-		user.Role = "admin"
-		user = service.MyService.User().CreateUser(user)
-		if user.Id > 0 {
-			userPath := config.AppInfo.UserDataPath + "/" + strconv.Itoa(user.Id)
-			file.MkDir(userPath)
-			os.Rename("/casaOS/server/conf/app_order.json", userPath+"/app_order.json")
-		}
-
-	}
 }

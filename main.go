@@ -10,9 +10,7 @@ import (
 	"github.com/IceWhaleTech/CasaOS/pkg/cache"
 	"github.com/IceWhaleTech/CasaOS/pkg/config"
 	"github.com/IceWhaleTech/CasaOS/pkg/sqlite"
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/encryption"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/loger"
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/random"
 	"github.com/IceWhaleTech/CasaOS/route"
 	"github.com/IceWhaleTech/CasaOS/service"
 
@@ -24,8 +22,6 @@ var sqliteDB *gorm.DB
 
 var configFlag = flag.String("c", "", "config address")
 var dbFlag = flag.String("db", "", "db path")
-var resetUser = flag.Bool("ru", false, "reset user")
-var user = flag.String("user", "", "user name")
 
 func init() {
 	flag.Parse()
@@ -62,24 +58,7 @@ func init() {
 // @BasePath /v1
 func main() {
 	service.NotifyMsg = make(chan notify.Message, 10)
-	if *resetUser {
-		if user == nil || len(*user) == 0 {
-			fmt.Println("user is empty")
-			return
-		}
-		userData := service.MyService.User().GetUserAllInfoByName(*user)
-		if userData.Id == 0 {
-			fmt.Println("user not exist")
-			return
-		}
-		password := random.RandomString(6, false)
-		userData.Password = encryption.GetMD5ByStr(password)
-		service.MyService.User().UpdateUserPassword(userData)
-		fmt.Println("User reset successful")
-		fmt.Println("UserName:" + userData.Username)
-		fmt.Println("Password:" + password)
-		return
-	}
+
 	go route.SocketInit(service.NotifyMsg)
 
 	//model.Setup()

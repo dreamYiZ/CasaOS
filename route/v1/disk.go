@@ -11,7 +11,6 @@ import (
 	"github.com/IceWhaleTech/CasaOS/model"
 	"github.com/IceWhaleTech/CasaOS/model/notify"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/common_err"
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/encryption"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/file"
 	"github.com/IceWhaleTech/CasaOS/service"
 	model2 "github.com/IceWhaleTech/CasaOS/service/model"
@@ -361,22 +360,22 @@ func PostDiskAddPartition(c *gin.Context) {
 // @Success 200 {string} string "ok"
 // @Router /disk/format [post]
 func PostDiskFormat(c *gin.Context) {
-	id := c.GetHeader("user_id")
+	///id := c.GetHeader("user_id")
 	js := make(map[string]string)
 	c.ShouldBind(&js)
 	path := js["path"]
 	t := "ext4"
-	pwd := js["password"]
+	// pwd := js["password"]
 	volume := js["volume"]
-	user := service.MyService.User().GetUserAllInfoById(id)
-	if user.Id == 0 {
-		c.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.USER_NOT_EXIST, Message: common_err.GetMsg(common_err.USER_NOT_EXIST)})
-		return
-	}
-	if encryption.GetMD5ByStr(pwd) != user.Password {
-		c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.PWD_INVALID, Message: common_err.GetMsg(common_err.PWD_INVALID)})
-		return
-	}
+	// user := service.MyService.User().GetUserAllInfoById(id)
+	// if user.Id == 0 {
+	// 	c.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.USER_NOT_EXIST, Message: common_err.GetMsg(common_err.USER_NOT_EXIST)})
+	// 	return
+	// }
+	// if encryption.GetMD5ByStr(pwd) != user.Password {
+	// 	c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.PWD_INVALID, Message: common_err.GetMsg(common_err.PWD_INVALID)})
+	// 	return
+	// }
 
 	if len(path) == 0 || len(t) == 0 {
 		c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.INVALID_PARAMS, Message: common_err.GetMsg(common_err.INVALID_PARAMS)})
@@ -411,27 +410,27 @@ func PostDiskFormat(c *gin.Context) {
 // @Success 200 {string} string "ok"
 // @Router /disk/umount [post]
 func PostDiskUmount(c *gin.Context) {
-	id := c.GetHeader("user_id")
+	// id := c.GetHeader("user_id")
 	js := make(map[string]string)
 	c.ShouldBind(&js)
 
 	path := js["path"]
 	mountPoint := js["volume"]
-	pwd := js["password"]
+	// pwd := js["password"]
 
 	if len(path) == 0 || len(mountPoint) == 0 {
 		c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.INVALID_PARAMS, Message: common_err.GetMsg(common_err.INVALID_PARAMS)})
 		return
 	}
-	user := service.MyService.User().GetUserAllInfoById(id)
-	if user.Id == 0 {
-		c.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.USER_NOT_EXIST, Message: common_err.GetMsg(common_err.USER_NOT_EXIST)})
-		return
-	}
-	if encryption.GetMD5ByStr(pwd) != user.Password {
-		c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.PWD_INVALID, Message: common_err.GetMsg(common_err.PWD_INVALID)})
-		return
-	}
+	// user := service.MyService.User().GetUserAllInfoById(id)
+	// if user.Id == 0 {
+	// 	c.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.USER_NOT_EXIST, Message: common_err.GetMsg(common_err.USER_NOT_EXIST)})
+	// 	return
+	// }
+	// if encryption.GetMD5ByStr(pwd) != user.Password {
+	// 	c.JSON(common_err.CLIENT_ERROR, model.Result{Success: common_err.PWD_INVALID, Message: common_err.GetMsg(common_err.PWD_INVALID)})
+	// 	return
+	// }
 
 	if _, ok := diskMap[path]; ok {
 		c.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.DISK_BUSYING, Message: common_err.GetMsg(common_err.DISK_BUSYING)})
